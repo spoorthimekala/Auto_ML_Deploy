@@ -1,0 +1,32 @@
+{% extends "base.html" %}{% set step = 2 %}
+{% block content %}
+<div class="card">
+  <h2>Dataset overview</h2>
+  <div class="grid">
+    <div class="stat"><small>ROWS</small><b data-count="{{ shape[0] }}">0</b></div>
+    <div class="stat"><small>COLUMNS</small><b data-count="{{ shape[1] }}">0</b></div>
+    <div class="stat"><small>MISSING CELLS</small><b data-count="{{ missing }}">0</b></div>
+  </div>
+  <div class="scroll" style="margin-top:16px">{{ preview | safe }}</div>
+</div>
+<div class="card">
+  <h2>Choose the target column</h2>
+  <form id="trainForm">
+    <label for="target">Column to predict</label>
+    <select name="target" id="target">
+      {% for c in columns %}<option value="{{ c }}" {% if loop.last %}selected{% endif %}>{{ c }}</option>{% endfor %}
+    </select>
+    <div class="chips"><span id="taskBadge" class="badge"></span></div>
+    <div class="err" id="trainError" style="margin-top:14px"></div>
+    <button type="submit">Train &amp; Compare Models</button>
+  </form>
+  <script id="taskData" type="application/json">{{ tasks | tojson }}</script>
+</div>
+<div id="overlay"><div class="card modal">
+  <div class="ring"></div>
+  <h2>Training models…</h2>
+  <p class="mut" id="pmsg">Starting…</p>
+  <div class="track"><div class="fill" id="bar" style="width:0;transition:width .4s;animation:none"></div></div>
+  <ul id="log"></ul>
+</div></div>
+{% endblock %}

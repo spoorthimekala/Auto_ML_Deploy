@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% set step = 4 %}
+{% block content %}
+<div class="split">
+  <div class="card">
+    <h2>Enter feature values</h2>
+    <p class="mut">Predictions update automatically as you type. Blank = missing value.</p>
+    <form id="predForm" onsubmit="return false">
+      <div class="form-grid">
+      {% for f in b.features %}
+        <div>
+          <label for="f{{ loop.index }}">{{ f.name }}</label>
+          {% if f.type == 'numeric' %}
+            <input type="number" step="any" id="f{{ loop.index }}" name="{{ f.name }}" value="{{ f.default }}">
+          {% else %}
+            <select id="f{{ loop.index }}" name="{{ f.name }}">
+              <option value="">(missing)</option>
+              {% for o in f.options %}<option value="{{ o }}">{{ o }}</option>{% endfor %}
+            </select>
+          {% endif %}
+        </div>
+      {% endfor %}
+      </div>
+      <button type="button" class="ghost" id="resetBtn">Reset to defaults</button>
+    </form>
+  </div>
+  <div class="card sticky">
+    <h2><span class="live"></span>Live prediction</h2>
+    <p class="mut">{{ b.target }} · {{ b.best_model }}</p>
+    <div class="err" id="predError"></div>
+    <div id="out"></div>
+  </div>
+</div>
+{% endblock %}

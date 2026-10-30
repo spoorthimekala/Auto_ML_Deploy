@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoML Deploy</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav>
+  <span class="logo">AutoML Deploy</span>
+  <a href="{{ url_for('index') }}">Upload</a>
+  <a href="{{ url_for('results') }}">Dashboard</a>
+  <a href="{{ url_for('predict') }}">Predict</a>
+</nav>
+<main>
+  {% set cur = step|default(0) %}
+  <div class="stepper">
+    {% for s in ['Upload', 'Configure', 'Dashboard', 'Predict'] %}
+      <div class="step {% if loop.index < cur %}done{% elif loop.index == cur %}active{% endif %}"><i>{{ loop.index }}</i>{{ s }}</div>
+    {% endfor %}
+  </div>
+  {% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="msg">{{ msg }}</div>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

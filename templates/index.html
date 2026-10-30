@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% set step = 1 %}
+{% block content %}
+<div class="card hero">
+  <div class="eyebrow">AUTOMATED MACHINE LEARNING</div>
+  <h1>Upload. Compare. Deploy.</h1>
+  <p class="mut">Drop a CSV and the system trains several models, picks the best one with cross-validation, and serves live predictions.</p>
+  <form method="post" enctype="multipart/form-data">
+    <div class="drop" id="dropzone">
+      <input type="file" name="file" id="file" accept=".csv" required>
+      <div class="ico"></div>
+      <h2 id="fname" style="margin:8px 0 4px">Drag &amp; drop your CSV here</h2>
+      <span class="mut">or click to browse (max 10 MB)</span>
+    </div>
+    <button type="submit" id="upbtn" disabled>Upload &amp; Continue </button>
+    {% if has_model %}<a class="btn ghost" href="{{ url_for('results') }}">View last model</a>{% endif %}
+  </form>
+  <div class="chips">
+    <span class="chip">Auto preprocessing</span><span class="chip">5-fold cross-validation</span>
+    <span class="chip">No data leakage</span><span class="chip">Joblib export</span><span class="chip">Live predictions</span>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}{% set step = 3 %}
+{% block content %}
+{% set key = b.selection_metric %}
+{% set vals = b.cv_results | map(attribute=key) | list %}
+<div class="card hero">
+  <div class="eyebrow">BEST MODEL</div>
+  <h1>{{ b.best_model }}</h1>
+  <p class="mut">Chosen by cross-validated <b>{{ key | upper }}</b> on training data only, then tested once on unseen data.</p>
+  <div class="chips">
+    <span class="badge {{ b.task }}">{{ b.task }}</span><span class="chip">Target: {{ b.target }}</span>
+    <span class="chip">{{ b.n_rows }} rows</span><span class="chip">Train {{ b.n_train }} / Test {{ b.n_test }}</span>
+  </div>
+  {% for n in b.notes %}<div class="note">{{ n }}</div>{% endfor %}
+</div>
+<div class="card">
+  <h2>Final test-set performance</h2>
+  <div class="grid">
+    {% for k, v in b.test_metrics.items() %}
+      <div class="stat"><small>{{ k | upper }}</small><b data-count="{{ v }}">0</b></div>
+    {% endfor %}
+  </div>
+</div>
+<div class="card">
+  <h2>Model comparison <span class="mut" style="font-size:14px">({{ key | upper }}, {{ 'higher' if b.task == 'classification' else 'lower' }} is better)</span></h2>
+  {% for r in b.cv_results %}
+    {% set w = (r[key] / (vals | max) * 100) if b.task == 'classification' else ((vals | min) / (r[key] or 0.0001) * 100) %}
+    <div class="bar {% if loop.first %}win{% endif %}">
+      <div class="row"><span>{% if loop.first %}{% endif %}{{ r.model }}</span><b>{{ r[key] }}</b></div>
+      <div class="track"><div class="fill" style="--w:{{ w }}%"></div></div>
+    </div>
+  {% endfor %}
+  <div class="scroll" style="margin-top:18px">
+  <table class="table">
+    <tr>{% for k in b.cv_results[0].keys() %}<th>{{ k }}</th>{% endfor %}</tr>
+    {% for row in b.cv_results %}
+      <tr {% if loop.first %}class="best"{% endif %}>{% for v in row.values() %}<td>{{ v }}</td>{% endfor %}</tr>
+    {% endfor %}
+  </table></div>
+</div>
+<a class="btn" href="{{ url_for('predict') }}">Make live predictions</a>
+<a class="btn ghost" href="{{ url_for('download') }}">Download model (.joblib)</a>
+<a class="btn ghost" href="{{ url_for('index') }}">Train another dataset</a>
+{% endblock %}
