@@ -40,6 +40,10 @@ def prepare_data(df, target):
     X = X.drop(columns=set(const + ids + leak))
     if X.shape[1] == 0:
         raise DataError("No usable feature columns left after cleaning.")
+        # Text-like columns -> plain strings (keeps NaN). Fixes bool/mixed-type columns.
+    for c in X.columns:
+        if not pd.api.types.is_numeric_dtype(X[c]) or pd.api.types.is_bool_dtype(X[c]):
+            X[c] = X[c].map(lambda v: v if pd.isna(v) else str(v)).astype(object)
 
     if task == "classification":
         counts = y.value_counts()
