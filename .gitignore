@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+uploads/
+models/
+mlruns/
+mlartifacts/
+mlflow.db
+.vscode/
+*_old/
